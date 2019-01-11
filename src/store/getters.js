@@ -1,0 +1,15 @@
+export const setuser = state => state.setuser;
+export const setstate = state => state.setstate;
+export const setflag = state => state.setflag;
+export const getticket = state => state.getticket;
+export const getid = state => state.getid;
+export const flag = state => state.flag;
+export const set = state => state.set;
+export const setquery = state => state.setquery;
+export const searchflag = state => state.searchflag;
+export const currentindex = state => state.currentindex;
+export const setbackindex = state => state.setbackindex;
+export const setaddress = state => state.setaddress;
+export const setmapaddresss = state => state.setmapaddress;
+export const setposition = state => state.setposition;
+export const engflag = state => state.engflag;

@@ -1,0 +1,15 @@
+export const SET_USER = "SET_USER";
+export const SET_STATE = "SET_STATE";
+export const SET_FLAG = 'SET_FLAG';
+export const GET_TICKET = 'GET_TICKET';
+export const GET_GITID = 'GET_GITID';
+export const FLAG = 'FLAG';
+export const set = 'set';
+export const SET_QUERY = 'SET_QUERY';
+export const searchflag = 'searchflag';
+export const SET_CURRENT_INDEX = 'SET_CURRENT_INDEX';
+export const SET_BACK_INDEX = 'SET_BACK_INDEX';
+export const SET_ADDRESS = 'SET_ADDRESS';
+export const SET_MAPADDRESS = 'SET_MAPADDRESS';
+export const SETPOSITION='SETPOSITION';
+export const ENGFLAG='ENGFLAG';

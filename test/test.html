@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+  <style>
+    html,
+    body,
+    #container {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <title>根据规划数据绘制公交路线</title>
+  <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+  <script src="https://webapi.amap.com/maps?v=1.4.10&key=您申请的key值&plugin=AMap.Transfer"></script>
+  <script src="https://a.amap.com/jsapi_demos/static/demo-center/js/demoutils.js"></script>
+</head>
+<body>
+<div id="container"></div>
+<div id="panel"></div>
+<script type="text/javascript">
+  var map = new AMap.Map("container", {
+    center: [116.397559, 39.89621],
+    zoom: 14
+  });
+
+  var transferOption = {
+    city: '北京市',
+    nightflag: true, // 是否计算夜班车
+    policy: AMap.TransferPolicy.LEAST_TIME, // 其它policy取值请参照 https://lbs.amap.com/api/javascript-api/reference/route-search#m_TransferPolicy
+  }
+
+  var transfer = new AMap.Transfer(transferOption)
+
+  //根据起、终点坐标查询公交换乘路线
+  transfer.search(
+    new AMap.LngLat(116.291035,39.907899),
+    new AMap.LngLat(116.427281, 39.903719),
+    function(status, result) {
+    // result即是对应的公交路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_TransferResult
+    if (status === 'complete') {
+      if (result.plans && result.plans.length) {
+        log.success('绘制公交路线完成')
+        drawRoute(result.plans[0])
+      }
+
+    }
+  });
+
+  function drawRoute (route) {
+    var startMarker = new AMap.Marker({
+      position: route.segments[0].transit.origin,
+      icon: 'https://webapi.amap.com/theme/v1.3/markers/n/start.png',
+      map: map
+    })
+
+    var endMarker = new AMap.Marker({
+      position: route.segments[route.segments.length - 1].transit.destination,
+      icon: 'https://webapi.amap.com/theme/v1.3/markers/n/end.png',
+      map: map
+    })
+
+    var routeLines = []
+
+    for (var i = 0, l = route.segments.length; i < l; i++) {
+      var segment = route.segments[i]
+      var line = null
+
+      // 绘制步行路线
+      if (segment.transit_mode === 'WALK') {
+        line = new AMap.Polyline({
+          path: segment.transit.path,
+          isOutline: true,
+          outlineColor: '#ffeeee',
+          borderWeight: 2,
+          strokeWeight: 5,
+          strokeColor: 'grey',
+          lineJoin: 'round',
+          strokeStyle: 'dashed'
+        })
+
+
+        line.setMap(map)
+        routeLines.push(line)
+      } else if (segment.transit_mode === 'SUBWAY' || segment.transit_mode === 'BUS') {
+        line = new AMap.Polyline({
+          path: segment.transit.path,
+          isOutline: true,
+          outlineColor: '#ffeeee',
+          borderWeight: 2,
+          strokeWeight: 5,
+          strokeColor: '#0091ff',
+          lineJoin: 'round',
+          strokeStyle: 'solid'
+        })
+
+        line.setMap(map)
+        routeLines.push(line)
+      } else {
+        // 其它transit_mode的情况如RAILWAY、TAXI等，该示例中不做处理
+      }
+    }
+
+    // 调整视野达到最佳显示区域
+    map.setFitView([ startMarker, endMarker ].concat(routeLines))
+  }
+
+</script>
+</body>
+</html>
